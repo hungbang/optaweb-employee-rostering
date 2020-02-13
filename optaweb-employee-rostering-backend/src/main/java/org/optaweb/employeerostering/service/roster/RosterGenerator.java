@@ -467,7 +467,7 @@ public class RosterGenerator implements ApplicationRunner {
                                                          contractList, skillList);
         List<ShiftTemplate> shiftTemplateList = createShiftTemplateList(generatorType, tenantId,
                                                                         rosterState, spotList,
-                                                                        employeeList);
+                                                                        employeeList, skillList);
         List<Shift> shiftList = createShiftList(generatorType, tenantId, rosterParametrization,
                                                 rosterState, spotList, shiftTemplateList);
         List<EmployeeAvailability> employeeAvailabilityList = createEmployeeAvailabilityList(
@@ -592,7 +592,7 @@ public class RosterGenerator implements ApplicationRunner {
                                                        Integer tenantId,
                                                        RosterState rosterState,
                                                        List<Spot> spotList,
-                                                       List<Employee> employeeList) {
+                                                       List<Employee> employeeList, List<Skill> skillList) {
         int rotationLength = rosterState.getRotationLength();
         List<ShiftTemplate> shiftTemplateList = new ArrayList<>(spotList.size() * rotationLength *
                                                                         generatorType.timeslotRangeList.size());
@@ -636,6 +636,8 @@ public class RosterGenerator implements ApplicationRunner {
                                 rotationEmployeeList.get(rotationEmployeeIndex);
                         ShiftTemplate shiftTemplate = new ShiftTemplate(tenantId, spot, startDayOffset, startTime,
                                                                         endDayOffset, endTime, rotationEmployee);
+                        Set<Skill> requiredSkillSet = new HashSet<>(extractRandomSubList(skillList, 0.5, 0.9, 1.0));
+                        shiftTemplate.setRequiredSkillSet(requiredSkillSet);
                         entityManager.persist(shiftTemplate);
                         shiftTemplateList.add(shiftTemplate);
                     }

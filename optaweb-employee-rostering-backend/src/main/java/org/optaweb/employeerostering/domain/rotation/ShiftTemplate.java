@@ -21,15 +21,16 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import org.optaweb.employeerostering.domain.common.AbstractPersistable;
 import org.optaweb.employeerostering.domain.employee.Employee;
 import org.optaweb.employeerostering.domain.rotation.view.ShiftTemplateView;
 import org.optaweb.employeerostering.domain.shift.Shift;
+import org.optaweb.employeerostering.domain.skill.Skill;
 import org.optaweb.employeerostering.domain.spot.Spot;
 
 @Entity
@@ -51,6 +52,14 @@ public class ShiftTemplate extends AbstractPersistable {
 
     @ManyToOne
     private Employee rotationEmployee;
+
+    @NotNull
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "ShiftTemplateRequiredSkillSet",
+            joinColumns = @JoinColumn(name = "ShiftTemplateId", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "skillId", referencedColumnName = "id")
+    )
+    private Set<Skill> requiredSkillSet;
 
     @SuppressWarnings("unused")
     public ShiftTemplate() {
@@ -171,5 +180,13 @@ public class ShiftTemplate extends AbstractPersistable {
 
     public void setRotationEmployee(Employee rotationEmployee) {
         this.rotationEmployee = rotationEmployee;
+    }
+
+    public Set<Skill> getRequiredSkillSet() {
+        return requiredSkillSet;
+    }
+
+    public void setRequiredSkillSet(Set<Skill> requiredSkillSet) {
+        this.requiredSkillSet = requiredSkillSet;
     }
 }

@@ -319,6 +319,7 @@ describe('Edit Shift Template Modal', () => {
       version: 2,
       spot,
       rotationEmployee: employee,
+      requiredSkillSet: [],
       startDayOffset: 2,
       startTime: { hours: 9, minutes: 0 },
       endDayOffset: 3,
@@ -339,6 +340,7 @@ describe('Edit Shift Template Modal', () => {
       version: 2,
       spot,
       rotationEmployee: null,
+      requiredSkillSet: [],
       startDayOffset: rotationLength - 1,
       startTime: { hours: 9, minutes: 0 },
       endDayOffset: 0,
@@ -373,6 +375,7 @@ describe('Edit Shift Template Modal', () => {
       version: 2,
       spot,
       rotationEmployee: null,
+      requiredSkillSet: [],
       durationBetweenRotationStartAndTemplateStart: moment.duration(rotationLength - 1, 'days').add(9, 'hours'),
       shiftTemplateDuration: moment.duration(24, 'hours'),
     }, rotationLength)).toEqual({
@@ -435,6 +438,7 @@ const baseShiftTemplate: ShiftTemplate = {
   shiftTemplateDuration: moment.duration(8, 'h'),
   spot,
   rotationEmployee: employee,
+  requiredSkillSet: []
 };
 
 const rotationLength = 24;
@@ -446,6 +450,7 @@ const baseProps: Props & WithTranslation = {
   isOpen: true,
   spotList: [spot],
   employeeList: [employee],
+  skillList: [],
   rotationLength,
   onSave: jest.fn(),
   onDelete: jest.fn(),

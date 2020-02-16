@@ -438,7 +438,7 @@ const baseShiftTemplate: ShiftTemplate = {
   shiftTemplateDuration: moment.duration(8, 'h'),
   spot,
   rotationEmployee: employee,
-  requiredSkillSet: []
+  requiredSkillSet: [],
 };
 
 const rotationLength = 24;

@@ -352,7 +352,7 @@ export class RotationPage extends React.Component<Props & WithTranslation, State
                   .subtract(moment(start).diff(baseDate)),
                 spot: shownSpot,
                 rotationEmployee: null,
-                requiredSkillSet: []
+                requiredSkillSet: [],
               });
             }
           }

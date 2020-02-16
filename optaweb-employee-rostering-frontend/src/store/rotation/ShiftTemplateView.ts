@@ -25,7 +25,7 @@ export function shiftTemplateToShiftTemplateView(shiftTemplate: ShiftTemplate): 
       'durationBetweenRotationStartAndTemplateStart'),
     spotId: shiftTemplate.spot.id as number,
     rotationEmployeeId: shiftTemplate.rotationEmployee ? shiftTemplate.rotationEmployee.id as number : null,
-    //TODO: setting rotationSkillId
+    // TODO : setting rotationSkillId
     rotationSkillId: shiftTemplate.requiredSkillSet ? shiftTemplate.requiredSkillSet[0].id as number : null,
     shiftTemplateDuration: shiftTemplate.shiftTemplateDuration.toISOString(),
     durationBetweenRotationStartAndTemplateStart:
@@ -42,7 +42,7 @@ export function shiftTemplateViewToDomainObjectView(view: ShiftTemplateView): Do
     shiftTemplateDuration: moment.duration(view.shiftTemplateDuration),
     durationBetweenRotationStartAndTemplateStart: moment.duration(view.durationBetweenRotationStartAndTemplateStart),
     // @ts-ignore
-    requiredSkillSet: view.rotationSkillId ? [view.rotationSkillId]: []
+    requiredSkillSet: view.rotationSkillId ? [view.rotationSkillId] : [],
   };
 }
 

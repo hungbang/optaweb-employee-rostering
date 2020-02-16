@@ -67,6 +67,7 @@ RefreshShiftTemplateListAction> = () => (dispatch, state, client) => {
   const tenantId = state().tenantData.currentTenantId;
   dispatch(actions.setIsShiftTemplateListLoading(true));
   return client.get<ShiftTemplateView[]>(`/tenant/${tenantId}/rotation/`).then((shiftTemplateList) => {
+    debugger;
     dispatch(actions.refreshShiftTemplateList(shiftTemplateList.map(shiftTemplateViewToDomainObjectView)));
     dispatch(actions.setIsShiftTemplateListLoading(false));
   });

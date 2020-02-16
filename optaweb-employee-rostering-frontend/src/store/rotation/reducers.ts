@@ -44,6 +44,7 @@ const shiftTemplateReducer = (state = initialState, action: ShiftTemplateAction)
           action.shiftTemplate) };
     }
     case ActionType.REFRESH_SHIFT_TEMPLATE_LIST: {
+      debugger;
       return { ...state, shiftTemplateMapById: createIdMapFromList(action.shiftTemplateList) };
     }
     default:

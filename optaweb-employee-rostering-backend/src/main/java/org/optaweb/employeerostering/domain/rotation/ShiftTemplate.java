@@ -56,7 +56,7 @@ public class ShiftTemplate extends AbstractPersistable {
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "ShiftTemplateRequiredSkillSet",
-            joinColumns = @JoinColumn(name = "ShiftTemplateId", referencedColumnName = "id"),
+            joinColumns = @JoinColumn(name = "shiftTemplateId", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "skillId", referencedColumnName = "id")
     )
     private Set<Skill> requiredSkillSet;

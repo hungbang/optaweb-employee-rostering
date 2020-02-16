@@ -33,7 +33,7 @@ import org.optaplanner.core.api.domain.lookup.PlanningId;
 public class Tenant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @PlanningId
     private Integer id;
 

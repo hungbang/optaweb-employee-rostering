@@ -9,6 +9,7 @@ name: Name
 employee: Employee
 employees: Employees
 rotationEmployee: Rotation Employee
+rotationSkill: Rotation Skill
 unassigned: Unassigned
 skills: Skills
 spot: Spot

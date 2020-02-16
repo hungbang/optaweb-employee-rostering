@@ -19,6 +19,7 @@ import { spotSelectors } from 'store/spot';
 import { objectWithout } from 'util/ImmutableCollectionOperations';
 import { employeeSelectors } from 'store/employee';
 import { AppState } from '../types';
+import {skillSelectors} from "../skill";
 
 function isLoading(state: AppState) {
   return state.shiftTemplateList.isLoading || state.employeeList.isLoading
@@ -30,11 +31,15 @@ export const getShiftTemplateById = (state: AppState, id: number): ShiftTemplate
     throw Error('Shift Template list is loading');
   }
   const shiftTemplateView = state.shiftTemplateList.shiftTemplateMapById.get(id) as DomainObjectView<ShiftTemplate>;
+  debugger;
   return {
     ...objectWithout(shiftTemplateView, 'spot', 'rotationEmployee'),
     spot: spotSelectors.getSpotById(state, shiftTemplateView.spot),
     rotationEmployee: shiftTemplateView.rotationEmployee
       ? employeeSelectors.getEmployeeById(state, shiftTemplateView.rotationEmployee) : null,
+    requiredSkillSet: shiftTemplateView.requiredSkillSet && shiftTemplateView.requiredSkillSet.length > 0 ?
+      // @ts-ignore
+      [skillSelectors.getSkillById(state,shiftTemplateView.requiredSkillSet[0])] : []
   };
 };
 

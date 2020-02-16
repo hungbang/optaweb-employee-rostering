@@ -29,7 +29,7 @@ import org.optaplanner.core.api.domain.lookup.PlanningId;
 public abstract class AbstractPersistable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @PlanningId
     private Long id;
 

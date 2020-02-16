@@ -32,6 +32,8 @@ import { withTranslation, WithTranslation } from 'react-i18next';
 import { objectWithout } from 'util/ImmutableCollectionOperations';
 import moment from 'moment';
 import { RosterState } from 'domain/RosterState';
+import {skillSelectors} from "../../../store/skill";
+import {Skill} from "../../../domain/Skill";
 
 export interface Props {
   tenantId: number;
@@ -39,6 +41,7 @@ export interface Props {
   isOpen: boolean;
   spotList: Spot[];
   employeeList: Employee[];
+  skillList: Skill[],
   rotationLength: number | null;
   onSave: (availability: ShiftTemplate) => void;
   onDelete: (availability: ShiftTemplate) => void;
@@ -57,6 +60,7 @@ const mapStateToProps = (state: AppState, ownProps: {
   spotList: spotSelectors.getSpotList(state),
   rotationLength: state.rosterState.isLoading ? null : (state.rosterState.rosterState as RosterState).rotationLength,
   employeeList: employeeSelectors.getEmployeeList(state),
+  skillList: skillSelectors.getSkillList(state)
 });
 
 export type ShiftTemplateData = Pick<ShiftTemplate, Exclude<keyof ShiftTemplate,
@@ -130,6 +134,7 @@ export class EditShiftTemplateModal extends React.Component<Props & WithTranslat
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
+    debugger;
     if (this.props.shiftTemplate === undefined && prevProps.shiftTemplate !== undefined) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ resetCount: prevState.resetCount + 1,
@@ -303,6 +308,22 @@ export class EditShiftTemplateModal extends React.Component<Props & WithTranslat
               optionToStringMap={employee => (employee ? employee.name : t('unassigned'))}
               onChange={employee => this.setState(prevState => ({
                 editedValue: { ...prevState.editedValue, rotationEmployee: employee || null },
+              }))}
+              optional
+            />
+          </InputGroup>
+
+
+          <InputGroup>
+            <Label>{t('rotationSkill')}</Label>
+            <TypeaheadSelectInput
+              aria-label="Skill"
+              emptyText={t('unassigned')}
+              value={this.state.editedValue.requiredSkillSet && this.state.editedValue.requiredSkillSet.length > 0 ? this.state.editedValue.requiredSkillSet[0] : undefined}
+              options={[undefined, ...this.props.skillList]}
+              optionToStringMap={skill => (skill ? skill.name : t('unassigned'))}
+              onChange={skill => this.setState(prevState => ({
+                editedValue: { ...prevState.editedValue, requiredSkillSet: skill ? [skill] : []},
               }))}
               optional
             />

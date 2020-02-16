@@ -43,6 +43,7 @@ describe('Rotation operations', () => {
       version: 0,
       spotId: 1,
       rotationEmployeeId: 2,
+      rotationSkillId: 2,
       durationBetweenRotationStartAndTemplateStart: 'PT3D',
       shiftTemplateDuration: 'PT8H',
     }];
@@ -72,6 +73,7 @@ describe('Rotation operations', () => {
         requiredSkillSet: [],
       },
       rotationEmployee: null,
+      requiredSkillSet: [],
       durationBetweenRotationStartAndTemplateStart: moment.duration('PT3D'),
       shiftTemplateDuration: moment.duration('PT8H'),
     };
@@ -98,6 +100,7 @@ describe('Rotation operations', () => {
         requiredSkillSet: [],
       },
       rotationEmployee: null,
+      requiredSkillSet: [],
       durationBetweenRotationStartAndTemplateStart: moment.duration('PT3D'),
       shiftTemplateDuration: moment.duration('PT8H'),
     };
@@ -122,6 +125,7 @@ describe('Rotation operations', () => {
         requiredSkillSet: [],
       },
       rotationEmployee: null,
+      requiredSkillSet: [],
       durationBetweenRotationStartAndTemplateStart: moment.duration('PT3D'),
       shiftTemplateDuration: moment.duration('PT8H'),
     };
@@ -156,6 +160,7 @@ describe('Rotation operations', () => {
         requiredSkillSet: [],
       },
       rotationEmployee: null,
+      requiredSkillSet: [],
       durationBetweenRotationStartAndTemplateStart: moment.duration('PT3D'),
       shiftTemplateDuration: moment.duration('PT8H'),
     };
@@ -187,6 +192,7 @@ describe('Rotation reducers', () => {
       requiredSkillSet: [],
     },
     rotationEmployee: null,
+    requiredSkillSet: [],
     durationBetweenRotationStartAndTemplateStart: moment.duration('PT3D'),
     shiftTemplateDuration: moment.duration('PT8H'),
   };
@@ -201,6 +207,7 @@ describe('Rotation reducers', () => {
       requiredSkillSet: [],
     },
     rotationEmployee: null,
+    requiredSkillSet: [],
     durationBetweenRotationStartAndTemplateStart: moment.duration('PT3D'),
     shiftTemplateDuration: moment.duration('PT8H'),
   };
@@ -215,6 +222,7 @@ describe('Rotation reducers', () => {
       requiredSkillSet: [],
     },
     rotationEmployee: null,
+    requiredSkillSet: [],
     durationBetweenRotationStartAndTemplateStart: moment.duration('PT3D'),
     shiftTemplateDuration: moment.duration('PT8H'),
   };
@@ -435,6 +443,7 @@ const state: AppState = {
         version: 0,
         spot: 1,
         rotationEmployee: null,
+        requiredSkillSet: [],
         durationBetweenRotationStartAndTemplateStart: moment.duration('PT3D'),
         shiftTemplateDuration: moment.duration('PT8H'),
       }],
@@ -444,6 +453,7 @@ const state: AppState = {
         version: 0,
         spot: 1,
         rotationEmployee: 3,
+        requiredSkillSet: [],
         durationBetweenRotationStartAndTemplateStart: moment.duration('PT3D'),
         shiftTemplateDuration: moment.duration('PT8H'),
       }],

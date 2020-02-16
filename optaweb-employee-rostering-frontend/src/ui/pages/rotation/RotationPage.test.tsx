@@ -270,6 +270,7 @@ const shiftTemplate: ShiftTemplate = {
   shiftTemplateDuration: moment.duration(8, 'hours'),
   spot,
   rotationEmployee: employee,
+  requiredSkillSet: [],
 };
 
 const rosterState: RosterState = {

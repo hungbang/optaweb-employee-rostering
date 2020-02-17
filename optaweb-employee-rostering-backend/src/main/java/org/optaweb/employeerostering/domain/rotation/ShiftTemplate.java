@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -31,6 +32,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import com.google.common.collect.Sets;
 import org.optaweb.employeerostering.domain.common.AbstractPersistable;
 import org.optaweb.employeerostering.domain.employee.Employee;
 import org.optaweb.employeerostering.domain.rotation.view.ShiftTemplateView;
@@ -109,6 +111,12 @@ public class ShiftTemplate extends AbstractPersistable {
                                                        .minusDays(endDayAfterStartDay)
                                                        .getSeconds());
         this.endDayOffset = endDayAfterStartDay % rotationLength;
+    }
+
+    public ShiftTemplate(Integer rotationLength, ShiftTemplateView shiftTemplateView, Spot spot,
+                         Employee rotationEmployee, Skill skill){
+        this(rotationLength,shiftTemplateView, spot, rotationEmployee);
+        this.requiredSkillSet = Objects.nonNull(skill) ? Sets.newHashSet(skill): Sets.newHashSet();
     }
 
     public Shift createShiftOnDate(LocalDate startDate, int rotationLength, ZoneId zoneId,

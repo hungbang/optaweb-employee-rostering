@@ -17,6 +17,7 @@
 package org.optaweb.employeerostering.service.rotation;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,10 +27,12 @@ import org.optaweb.employeerostering.domain.employee.Employee;
 import org.optaweb.employeerostering.domain.roster.RosterState;
 import org.optaweb.employeerostering.domain.rotation.ShiftTemplate;
 import org.optaweb.employeerostering.domain.rotation.view.ShiftTemplateView;
+import org.optaweb.employeerostering.domain.skill.Skill;
 import org.optaweb.employeerostering.domain.spot.Spot;
 import org.optaweb.employeerostering.service.common.AbstractRestService;
 import org.optaweb.employeerostering.service.employee.EmployeeService;
 import org.optaweb.employeerostering.service.roster.RosterService;
+import org.optaweb.employeerostering.service.skill.SkillService;
 import org.optaweb.employeerostering.service.spot.SpotService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,9 +45,10 @@ public class RotationService extends AbstractRestService {
     private final RosterService rosterService;
     private final SpotService spotService;
     private final EmployeeService employeeService;
+    private final SkillService skillService;
 
     public RotationService(ShiftTemplateRepository shiftTemplateRepository, RosterService rosterService,
-                           SpotService spotService, EmployeeService employeeService) {
+                           SpotService spotService, EmployeeService employeeService, SkillService skillService) {
         this.shiftTemplateRepository = shiftTemplateRepository;
 
         this.rosterService = rosterService;
@@ -55,6 +59,9 @@ public class RotationService extends AbstractRestService {
 
         this.employeeService = employeeService;
         Assert.notNull(employeeService, "employeeService must not be null.");
+
+        this.skillService = skillService;
+        Assert.notNull(skillService, "skillService must not be null.");
     }
 
     @Transactional
@@ -82,6 +89,7 @@ public class RotationService extends AbstractRestService {
         RosterState rosterState = rosterService.getRosterState(tenantId);
         Spot spot = spotService.getSpot(tenantId, shiftTemplateView.getSpotId());
         Employee employee;
+        Skill skill;
 
         if (shiftTemplateView.getRotationEmployeeId() != null) {
             employee = employeeService.getEmployee(tenantId, shiftTemplateView.getRotationEmployeeId());
@@ -89,8 +97,15 @@ public class RotationService extends AbstractRestService {
             employee = null;
         }
 
+        //[hungbang] adding the rotation skill
+        if (Objects.nonNull(shiftTemplateView.getRotationSkillId())){
+            skill = skillService.getSkill(tenantId, shiftTemplateView.getRotationSkillId());
+        }else{
+            skill = null;
+        }
+
         ShiftTemplate shiftTemplate = new ShiftTemplate(rosterState.getRotationLength(), shiftTemplateView, spot,
-                                                        employee);
+                                                        employee, skill);
         validateTenantIdParameter(tenantId, shiftTemplate);
         shiftTemplateRepository.save(shiftTemplate);
         return new ShiftTemplateView(rosterState.getRotationLength(), shiftTemplate);
@@ -108,8 +123,16 @@ public class RotationService extends AbstractRestService {
             employee = null;
         }
 
+        Skill skill;
+        //[hungbang] adding the rotation skill
+        if (Objects.nonNull(shiftTemplateView.getRotationSkillId())){
+            skill = skillService.getSkill(tenantId, shiftTemplateView.getRotationSkillId());
+        }else{
+            skill = null;
+        }
+
         ShiftTemplate newShiftTemplate = new ShiftTemplate(rosterState.getRotationLength(), shiftTemplateView, spot,
-                                                           employee);
+                                                           employee, skill);
         validateTenantIdParameter(tenantId, newShiftTemplate);
 
         ShiftTemplate oldShiftTemplate = shiftTemplateRepository
@@ -128,6 +151,8 @@ public class RotationService extends AbstractRestService {
         oldShiftTemplate.setEndDayOffset(newShiftTemplate.getEndDayOffset());
         oldShiftTemplate.setStartTime(newShiftTemplate.getStartTime());
         oldShiftTemplate.setEndTime(newShiftTemplate.getEndTime());
+        //[hungbang] adding the requiredSkillSet
+        oldShiftTemplate.setRequiredSkillSet(newShiftTemplate.getRequiredSkillSet());
 
         // Flush to increase version number before we duplicate it to ShiftTemplateView
         ShiftTemplate updatedShiftTemplate = shiftTemplateRepository.saveAndFlush(oldShiftTemplate);

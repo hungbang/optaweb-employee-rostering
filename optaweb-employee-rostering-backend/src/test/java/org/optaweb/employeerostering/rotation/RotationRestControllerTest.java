@@ -20,12 +20,15 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.collect.Sets;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.optaweb.employeerostering.AbstractEntityRequireTenantRestServiceTest;
 import org.optaweb.employeerostering.domain.rotation.view.ShiftTemplateView;
+import org.optaweb.employeerostering.domain.skill.Skill;
+import org.optaweb.employeerostering.domain.skill.view.SkillView;
 import org.optaweb.employeerostering.domain.spot.Spot;
 import org.optaweb.employeerostering.domain.spot.view.SpotView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +54,7 @@ public class RotationRestControllerTest extends AbstractEntityRequireTenantRestS
 
     private final String shiftTemplatePathURI = "http://localhost:8080/rest/tenant/{tenantId}/rotation/";
     private final String spotPathURI = "http://localhost:8080/rest/tenant/{tenantId}/spot/";
+    private final String skillPathURI = "http://localhost:8080/rest/tenant/{tenantId}/skill/";
 
     private ResponseEntity<List<ShiftTemplateView>> getShiftTemplates(Integer tenantId) {
         return restTemplate.exchange(shiftTemplatePathURI, HttpMethod.GET, null,
@@ -80,6 +84,10 @@ public class RotationRestControllerTest extends AbstractEntityRequireTenantRestS
         return restTemplate.postForEntity(spotPathURI + "add", spotView, Spot.class, tenantId);
     }
 
+    private ResponseEntity<Skill> addSkill(Integer tenantId, SkillView skillView) {
+        return restTemplate.postForEntity(skillPathURI + "add", skillView, Skill.class, tenantId);
+    }
+
     @Before
     public void setup() {
         createTestTenant();
@@ -96,7 +104,7 @@ public class RotationRestControllerTest extends AbstractEntityRequireTenantRestS
         Spot spotA = spotResponseA.getBody();
 
         ShiftTemplateView shiftTemplateView = new ShiftTemplateView(TENANT_ID, spotA.getId(), Duration.ofDays(0),
-                Duration.ofDays(0), null);
+                Duration.ofDays(0), null, null);
         ResponseEntity<ShiftTemplateView> postResponse = addShiftTemplate(TENANT_ID, shiftTemplateView);
         assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -105,7 +113,41 @@ public class RotationRestControllerTest extends AbstractEntityRequireTenantRestS
         assertThat(response.getBody()).isEqualToComparingFieldByFieldRecursively(postResponse.getBody());
 
         ShiftTemplateView updatedShiftTemplate = new ShiftTemplateView(TENANT_ID, spotA.getId(), Duration.ofDays(1),
-                Duration.ofDays(1), null);
+                Duration.ofDays(1), null, null);
+        updatedShiftTemplate.setId(postResponse.getBody().getId());
+        HttpEntity<ShiftTemplateView> request = new HttpEntity<>(updatedShiftTemplate);
+        ResponseEntity<ShiftTemplateView> putResponse = updateShiftTemplate(TENANT_ID, request);
+        assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        response = getShiftTemplate(TENANT_ID, putResponse.getBody().getId());
+        assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(putResponse.getBody()).isEqualTo(response.getBody());
+
+        deleteShiftTemplate(TENANT_ID, putResponse.getBody().getId());
+
+        ResponseEntity<List<ShiftTemplateView>> getListResponse = getShiftTemplates(TENANT_ID);
+        assertThat(getListResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(getListResponse.getBody()).isEmpty();
+    }
+
+    @Test
+    public void shiftTemplateWithRotationSkillTest(){
+        ResponseEntity<Skill> skillResponseA = addSkill(TENANT_ID, new SkillView(TENANT_ID, "Test skill A"));
+        Skill skillA = skillResponseA.getBody();
+        ResponseEntity<Spot> spotResponseA = addSpot(TENANT_ID, new SpotView(TENANT_ID, "A", Sets.newHashSet(skillA)));
+        Spot spotA = spotResponseA.getBody();
+
+        ShiftTemplateView shiftTemplateView = new ShiftTemplateView(TENANT_ID, spotA.getId(), Duration.ofDays(0),
+                Duration.ofDays(0), null, skillA.getId());
+        ResponseEntity<ShiftTemplateView> postResponse = addShiftTemplate(TENANT_ID, shiftTemplateView);
+        assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        ResponseEntity<ShiftTemplateView> response = getShiftTemplate(TENANT_ID, postResponse.getBody().getId());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualToComparingFieldByFieldRecursively(postResponse.getBody());
+
+        ShiftTemplateView updatedShiftTemplate = new ShiftTemplateView(TENANT_ID, spotA.getId(), Duration.ofDays(1),
+                Duration.ofDays(1), null, skillA.getId());
         updatedShiftTemplate.setId(postResponse.getBody().getId());
         HttpEntity<ShiftTemplateView> request = new HttpEntity<>(updatedShiftTemplate);
         ResponseEntity<ShiftTemplateView> putResponse = updateShiftTemplate(TENANT_ID, request);

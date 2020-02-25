@@ -29,6 +29,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaweb.employeerostering.domain.common.AbstractPersistable;
 import org.optaweb.employeerostering.domain.employee.Employee;
 import org.optaweb.employeerostering.domain.shift.view.ShiftView;
+import org.optaweb.employeerostering.domain.skill.Skill;
 import org.optaweb.employeerostering.domain.spot.Spot;
 
 @Entity
@@ -41,6 +42,9 @@ public class Shift extends AbstractPersistable {
     @NotNull
     @ManyToOne
     private Spot spot;
+
+    @ManyToOne
+    private Skill rotationSkill;
 
     @NotNull
     private OffsetDateTime startDateTime;
@@ -141,6 +145,14 @@ public class Shift extends AbstractPersistable {
 
     public void setRotationEmployee(Employee rotationEmployee) {
         this.rotationEmployee = rotationEmployee;
+    }
+
+    public Skill getRotationSkill() {
+        return rotationSkill;
+    }
+
+    public void setRotationSkill(Skill rotationSkill) {
+        this.rotationSkill = rotationSkill;
     }
 
     public Shift inTimeZone(ZoneId zoneId) {

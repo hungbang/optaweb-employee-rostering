@@ -140,6 +140,9 @@ public class ShiftTemplate extends AbstractPersistable {
         if (defaultToRotationEmployee) {
             shift.setEmployee(rotationEmployee);
         }
+        if(!requiredSkillSet.isEmpty()){
+            shift.setRotationSkill(requiredSkillSet.iterator().next());
+        }
         return shift;
     }
 

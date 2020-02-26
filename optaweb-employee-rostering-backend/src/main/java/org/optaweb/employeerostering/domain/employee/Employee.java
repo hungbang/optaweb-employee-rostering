@@ -69,11 +69,11 @@ public class Employee extends AbstractPersistable {
     }
 
     public boolean hasSkill(Skill skill, Skill rotationSkill) {
-        return skillProficiencySet.containsAll(Arrays.asList(skill, rotationSkill));
+        return skillProficiencySet.contains(skill) || skillProficiencySet.contains(rotationSkill);
     }
 
     public boolean hasSkills(Collection<Skill> skills, Skill rotationSkill) {
-        return skillProficiencySet.containsAll(Arrays.asList(skills, rotationSkill));
+        return skillProficiencySet.containsAll(skills) || skillProficiencySet.contains(rotationSkill);
     }
 
     @Override
